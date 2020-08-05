@@ -6,6 +6,10 @@ class NetworkManagement:
     """
     This class uses the results of various simulations to train a control model
     used to optimally control the network
+    Parameter
+    ---------
+    network : Network object
+        network object used to train the model on many simulation episodes
     """
     def __init__(self, network):
         self.network = network
