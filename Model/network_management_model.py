@@ -17,7 +17,8 @@ class NetworkManagement:
         interpret the results and learn an optimized control model
         """
         self.loss = 1000000
-        for iter in tqdm(range(10000)):
+        for iter in tqdm(range(1000)):
+            self.network.clean()
             self.pumps = self.network.get_pumps()
             for pump in self.pumps:
                 for inc in range(pump.get_inc()):
@@ -26,9 +27,8 @@ class NetworkManagement:
             self.network.set_pumps(self.pumps)
             self.network.simulate()
             results = self.network.get_results(visualize_results=False)
-            self.network.clean()
             energy_spent = sum([sum(pump["energy"]) for pump in results["pumps"]]) #get total energy spent
-            total_water_level = sum([tank["level"][-1] for tank in results["tanks"]]) #get total water level in the end of simulation
+            total_water_level = sum([tank["level"][-1] for tank in results["tanks"]]) + 1 #get total water level in the end of simulation
             #dummy loss function to find best pump status, maximize water in the tank and minimize energy spent
             if energy_spent*(1/total_water_level) < self.loss:
                 self.loss = energy_spent*(1/total_water_level)
@@ -38,4 +38,5 @@ class NetworkManagement:
         """
         return the best pump status combination to control the network
         """
+        print(self.best_pumps)
         return self.best_pumps
